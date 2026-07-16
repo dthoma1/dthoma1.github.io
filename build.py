@@ -1,0 +1,266 @@
+#!/usr/bin/env python3
+"""Static site generator for Darby Thomas's portfolio.
+
+Reads content from ~/portfolio-content and emits a finished static site into
+the repository root (the directory this file lives in). No framework, no build
+tooling required to host — just push to GitHub Pages.
+"""
+import os, re, shutil
+import markdown as md
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+CONTENT = os.path.expanduser("~/portfolio-content")
+OUT = HERE
+
+# slug -> (Title, [category tokens]) in homepage order
+PROJECTS = [
+    ("sponsors-onboarding", "Sponsors Onboarding", ["product"]),
+    ("octocat-keycap", "Octocat Keycap", ["industrial", "brand"]),
+    ("github-sponsors-landing-page", "GitHub Sponsors Landing Page", ["product", "brand"]),
+    ("tamagotchi", "Tamagotchi", ["illustration"]),
+    ("cyberdecks", "Cyberdecks", ["illustration"]),
+    ("ink-drawing-series", "Ink Drawing Series", ["illustration"]),
+    ("supper-club", "Supper Club", ["brand", "illustration"]),
+    ("kitchen-mural", "Kitchen Mural", ["illustration"]),
+    ("gartarot", "Gartarot", ["illustration"]),
+    ("dispo-cam", "Dispo Cam", ["product", "illustration", "brand"]),
+    ("engineering-prints", "Engineering Prints", ["product", "illustration", "brand", "frontend"]),
+    ("apple-juicebox-illustration", "Apple Juicebox Illustration", ["illustration", "industrial"]),
+    ("iris-smartphone-lens", "Iris Smartphone Lens", ["brand", "illustration"]),
+    ("friendly-cargo-theme", "Friendly Cargo Theme", ["brand", "frontend"]),
+    ("coop-website", "Coop Website", ["brand", "frontend"]),
+    ("fresh-cookie-scent", "Fresh Cookie Scent", ["brand", "illustration"]),
+]
+
+CAT_LABELS = {
+    "product": "Product design",
+    "illustration": "Illustration",
+    "brand": "Brand &amp; marketing",
+    "industrial": "Industrial design",
+    "frontend": "Frontend",
+}
+
+# A saturated, playful accent color per project (for card tints / gradients)
+CARD_COLORS = [
+    "#ff5c8a", "#7c5cff", "#00c2a8", "#ffb01f", "#ff6a3d", "#3d8bff",
+    "#e64bd0", "#28c76f", "#ff477e", "#8a5cff", "#12b5c9", "#ffce1f",
+    "#ff7a45", "#5c7cff", "#2ec4b6", "#ff5c8a",
+]
+
+# A vivid, playful background color per project page (black text sits on all).
+PALETTE = [
+    "#ff5b39", "#ffa92e", "#ffd21f", "#b6e02a", "#37d9a0", "#46b6ff",
+    "#8f8cff", "#c78cff", "#ff7ab0", "#ff6f61", "#f9c80e", "#7bd389",
+    "#4dd0e1", "#b39ddb", "#ff8a5c", "#ea6fb0",
+]
+INDEX_BG = "#ff5b39"   # homepage signature color (coral red)
+INFO_BG = "#8f8cff"    # info page (periwinkle)
+
+def ink_for(hexbg):
+    """Pick near-black or white text for best contrast on a background."""
+    h = hexbg.lstrip("#")
+    r, g, b = (int(h[i:i+2], 16) / 255 for i in (0, 2, 4))
+    def lin(c):
+        return c / 12.92 if c <= 0.03928 else ((c + 0.055) / 1.055) ** 2.4
+    lum = 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b)
+    return "#141210" if lum > 0.16 else "#fbf7ff"
+
+def read(path):
+    with open(path, encoding="utf-8") as f:
+        return f.read()
+
+def find_thumb(slug):
+    imgdir = os.path.join(CONTENT, "projects", slug, "images")
+    for name in ("thumbnail.jpg", "thumbnail.png", "thumbnail.gif"):
+        if os.path.isfile(os.path.join(imgdir, name)):
+            return name
+    for name in sorted(os.listdir(imgdir)):
+        if name.lower().endswith((".jpg", ".png", ".gif", ".jpeg", ".webp")):
+            return name
+    return None
+
+def body_html(slug):
+    """Convert a project README to HTML, stripping the H1 title and the
+    Categories line, and rewriting image paths to the site's asset folder."""
+    text = read(os.path.join(CONTENT, "projects", slug, "README.md"))
+    kept = []
+    for ln in text.splitlines():
+        if ln.startswith("# ") or ln.startswith("**Categories:**"):
+            continue
+        kept.append(ln)
+    body = "\n".join(kept).strip()
+    body = body.replace("](images/", f"](../assets/img/projects/{slug}/")
+    htmlout = md.markdown(body, extensions=["extra"])
+    # Turn the bare GitHub raw .mp4 URL line into a real local video player
+    htmlout = re.sub(
+        r"<p>https://github\.com/[^<\s]+/([^/<\s]+\.mp4)</p>",
+        lambda m: (f'<video controls loop muted playsinline '
+                   f'src="../assets/img/projects/{slug}/{m.group(1)}"></video>'),
+        htmlout,
+    )
+    return htmlout
+
+def head(title, desc, css_path, extra=""):
+    return f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{title}</title>
+  <meta name="description" content="{desc}">
+  <meta property="og:title" content="{title}">
+  <meta property="og:description" content="{desc}">
+  <meta property="og:type" content="website">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{css_path}">
+  {extra}
+</head>"""
+
+def nav(prefix):
+    return f"""<header class="site-header">
+  <div class="wrap nav">
+    <a class="logo" href="{prefix}index.html">Darby&nbsp;Thomas</a>
+    <nav class="nav-links">
+      <a href="{prefix}index.html">Work</a>
+      <a href="{prefix}info.html">Info</a>
+    </nav>
+  </div>
+</header>"""
+
+def footer(prefix):
+    return """<footer class="site-footer">
+  <div class="wrap footer-inner">
+    <span>&copy; Darby Thomas</span>
+    <nav class="socials">
+      <a href="https://www.linkedin.com/in/darby-thomas-b4ba71265/" target="_blank" rel="noopener">LinkedIn</a>
+      <a href="https://twitter.com/ddddarby" target="_blank" rel="noopener">Twitter</a>
+      <a href="https://github.com/dthoma1" target="_blank" rel="noopener">GitHub</a>
+    </nav>
+  </div>
+</footer>"""
+
+
+def build_index():
+    filters = [("all", "All")] + [(k, v) for k, v in CAT_LABELS.items()]
+    filter_html = "\n".join(
+        f'      <button class="chip{" is-active" if k=="all" else ""}" data-filter="{k}">{v}</button>'
+        for k, v in filters
+    )
+    cards = []
+    for i, (slug, title, cats) in enumerate(PROJECTS):
+        thumb = find_thumb(slug)
+        color = PALETTE[i % len(PALETTE)]
+        cink = ink_for(color)
+        cat_attr = " ".join(cats)
+        cat_pills = "".join(f'<span class="pill">{CAT_LABELS[c]}</span>' for c in cats)
+        cards.append(f"""      <a class="card" href="projects/{slug}.html" data-cats="{cat_attr}" style="--card-bg:{color}; --card-ink:{cink}">
+        <div class="card-media"><img loading="lazy" src="assets/img/projects/{slug}/{thumb}" alt="{title}"></div>
+        <div class="card-body">
+          <h3 class="card-title">{title}</h3>
+          <div class="pills">{cat_pills}</div>
+        </div>
+      </a>""")
+    cards_html = "\n".join(cards)
+    page = head("Darby Thomas — Product Designer",
+                "Product designer, illustrator, and eclectic creative based in California.",
+                "assets/css/style.css") + f"""
+<body class="home" style="--page-bg:{INDEX_BG}; --ink:{ink_for(INDEX_BG)}">
+{nav("")}
+<main>
+  <section class="hero wrap">
+    <p class="eyebrow">Product designer · Illustrator · California</p>
+    <h1 class="hero-title">Hi, I'm <span class="grad">Darby</span> — I make playful, useful things.</h1>
+    <p class="hero-sub">I'm a product designer, illustrator, and eclectic creative. Currently designing at <strong>GitHub</strong>, previously <strong>Patreon</strong> and <strong>Photojojo</strong>.</p>
+  </section>
+
+  <section class="work wrap">
+    <div class="filters">
+{filter_html}
+    </div>
+    <div class="grid" id="grid">
+{cards_html}
+    </div>
+  </section>
+</main>
+{footer("")}
+<script src="assets/js/main.js"></script>
+</body>
+</html>"""
+    with open(os.path.join(OUT, "index.html"), "w", encoding="utf-8") as f:
+        f.write(page)
+
+
+def build_info():
+    about = read(os.path.join(CONTENT, "ABOUT.md"))
+    about = re.sub(r"^# .*\n", "", about, count=1)
+    about_html = md.markdown(about, extensions=["extra"])
+    page = head("Info — Darby Thomas", "About Darby Thomas.",
+                "assets/css/style.css") + f"""
+<body style="--page-bg:{INFO_BG}; --ink:{ink_for(INFO_BG)}">
+{nav("")}
+<main>
+  <section class="info wrap">
+    <h1 class="page-title"><span class="grad">Info</span></h1>
+    <div class="prose">{about_html}</div>
+  </section>
+</main>
+{footer("")}
+</body>
+</html>"""
+    with open(os.path.join(OUT, "info.html"), "w", encoding="utf-8") as f:
+        f.write(page)
+
+
+def build_projects():
+    os.makedirs(os.path.join(OUT, "projects"), exist_ok=True)
+    n = len(PROJECTS)
+    for i, (slug, title, cats) in enumerate(PROJECTS):
+        color = PALETTE[i % len(PALETTE)]
+        cat_pills = "".join(f'<span class="pill">{CAT_LABELS[c]}</span>' for c in cats)
+        content = body_html(slug)
+        nxt = PROJECTS[(i + 1) % n]
+        page = head(f"{title} — Darby Thomas", f"{title} — a project by Darby Thomas.",
+                    "../assets/css/style.css") + f"""
+<body style="--page-bg:{color}; --ink:{ink_for(color)}">
+{nav("../")}
+<main>
+  <article class="project wrap">
+    <a class="back" href="../index.html">&larr; All work</a>
+    <div class="pills">{cat_pills}</div>
+    <h1 class="project-title"><span class="grad">{title}</span></h1>
+    <div class="prose project-content">
+{content}
+    </div>
+    <a class="next" href="{nxt[0]}.html">Next project: <strong>{nxt[1]}</strong> &rarr;</a>
+  </article>
+</main>
+{footer("../")}
+</body>
+</html>"""
+        with open(os.path.join(OUT, "projects", f"{slug}.html"), "w", encoding="utf-8") as f:
+            f.write(page)
+
+
+def copy_assets():
+    dst = os.path.join(OUT, "assets", "img", "projects")
+    if os.path.isdir(dst):
+        shutil.rmtree(dst)
+    for slug, _, _ in PROJECTS:
+        src = os.path.join(CONTENT, "projects", slug, "images")
+        shutil.copytree(src, os.path.join(dst, slug))
+
+
+def main():
+    os.makedirs(os.path.join(OUT, "assets", "css"), exist_ok=True)
+    os.makedirs(os.path.join(OUT, "assets", "js"), exist_ok=True)
+    copy_assets()
+    build_index()
+    build_info()
+    build_projects()
+    print("Built site into", OUT)
+
+
+if __name__ == "__main__":
+    main()
