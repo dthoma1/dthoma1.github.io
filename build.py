@@ -55,6 +55,8 @@ PALETTE = [
 ]
 INDEX_BG = "#ff5b39"   # homepage signature color (coral red)
 INFO_BG = "#8f8cff"    # info page (periwinkle)
+WRITING_BG = "#f7f1e6"  # calm cream for long-form reading
+WRITING_INK = "#1c1913"
 
 def ink_for(hexbg):
     """Pick near-black or white text for best contrast on a background."""
@@ -68,6 +70,42 @@ def ink_for(hexbg):
 def read(path):
     with open(path, encoding="utf-8") as f:
         return f.read()
+
+def parse_post(path):
+    """Parse a writing post with simple --- frontmatter --- (title/date/summary)."""
+    raw = read(path)
+    meta = {"title": "Untitled", "date": "", "summary": ""}
+    body = raw
+    if raw.startswith("---"):
+        _, fm, body = raw.split("---", 2)
+        for line in fm.strip().splitlines():
+            if ":" in line:
+                k, v = line.split(":", 1)
+                meta[k.strip()] = v.strip()
+    meta["body"] = body.strip()
+    return meta
+
+def fmt_date(s):
+    try:
+        from datetime import datetime
+        return datetime.strptime(s.strip(), "%Y-%m-%d").strftime("%B %-d, %Y")
+    except Exception:
+        return s
+
+def load_posts():
+    wdir = os.path.join(CONTENT, "writing")
+    posts = []
+    if not os.path.isdir(wdir):
+        return posts
+    for fn in os.listdir(wdir):
+        if fn.endswith(".md"):
+            path = os.path.join(wdir, fn)
+            meta = parse_post(path)
+            meta["slug"] = fn[:-3]
+            meta["_mtime"] = os.path.getmtime(path)
+            posts.append(meta)
+    posts.sort(key=lambda p: (p.get("date", ""), p.get("_mtime", 0)), reverse=True)
+    return posts
 
 def find_thumb(slug):
     imgdir = os.path.join(CONTENT, "projects", slug, "images")
@@ -124,6 +162,7 @@ def nav(prefix):
     <a class="logo" href="{prefix}index.html">Darby&nbsp;Thomas</a>
     <nav class="nav-links">
       <a href="{prefix}index.html">Work</a>
+      <a href="{prefix}writing/index.html">Writing</a>
       <a href="{prefix}info.html">Info</a>
     </nav>
   </div>
@@ -163,19 +202,43 @@ def build_index():
         </div>
       </a>""")
     cards_html = "\n".join(cards)
+
+    # Writing teaser: latest 5 post titles (Brian Lovin style)
+    posts = load_posts()[:5]
+    teaser_rows = "\n".join(
+        f"""        <li><a href="writing/{p['slug']}.html"><span class="t-title">{p['title']}</span><span class="t-date">{fmt_date(p['date'])}</span></a></li>"""
+        for p in posts
+    )
+    writing_teaser = f"""
+  <section class="home-writing wrap">
+    <div class="section-head">
+      <h2 class="section-title">Writing</h2>
+      <a class="section-more" href="writing/index.html">All writing &rarr;</a>
+    </div>
+    <ul class="teaser-list">
+{teaser_rows}
+    </ul>
+  </section>
+""" if posts else ""
+
     page = head("Darby Thomas — Product Designer",
                 "Product designer, illustrator, and eclectic creative based in California.",
                 "assets/css/style.css") + f"""
 <body class="home" style="--page-bg:{INDEX_BG}; --ink:{ink_for(INDEX_BG)}">
 {nav("")}
 <main>
-  <section class="hero wrap">
-    <p class="eyebrow">Product designer · Illustrator · California</p>
-    <h1 class="hero-title">Hi, I'm <span class="grad">Darby</span> — I make playful, useful things.</h1>
-    <p class="hero-sub">I'm a product designer, illustrator, and eclectic creative. Currently designing at <strong>GitHub</strong>, previously <strong>Patreon</strong> and <strong>Photojojo</strong>.</p>
+  <section class="hero">
+    <div class="wrap hero-inner">
+      <p class="eyebrow">Product designer · Illustrator · California</p>
+      <h1 class="hero-title">Hi, I'm <span class="grad">Darby</span> — I make playful, useful things.</h1>
+      <p class="hero-sub">I'm a product designer, illustrator, and eclectic creative. Currently designing at <strong>GitHub</strong>, previously <strong>Patreon</strong> and <strong>Photojojo</strong>.</p>
+    </div>
   </section>
-
+{writing_teaser}
   <section class="work wrap">
+    <div class="section-head">
+      <h2 class="section-title">Selected work</h2>
+    </div>
     <div class="filters">
 {filter_html}
     </div>
@@ -243,6 +306,63 @@ def build_projects():
             f.write(page)
 
 
+def build_writing():
+    outdir = os.path.join(OUT, "writing")
+    os.makedirs(outdir, exist_ok=True)
+    posts = load_posts()
+
+    # Index page
+    items = []
+    for p in posts:
+        items.append(f"""      <a class="post-link" href="{p['slug']}.html">
+        <span class="post-date">{fmt_date(p['date'])}</span>
+        <h2 class="post-link-title">{p['title']}</h2>
+        <p class="post-summary">{p['summary']}</p>
+      </a>""")
+    items_html = "\n".join(items) if items else '<p class="prose">Nothing here yet — soon.</p>'
+    page = head("Writing — Darby Thomas", "Essays and process notes by Darby Thomas.",
+                "../assets/css/style.css") + f"""
+<body class="reading" style="--page-bg:{WRITING_BG}; --ink:{WRITING_INK}">
+{nav("../")}
+<main>
+  <section class="writing-index wrap">
+    <h1 class="page-title">Writing</h1>
+    <p class="writing-intro">Process notes, small experiments, and things I'm figuring out as I go.</p>
+    <div class="post-list">
+{items_html}
+    </div>
+  </section>
+</main>
+{footer("../")}
+</body>
+</html>"""
+    with open(os.path.join(outdir, "index.html"), "w", encoding="utf-8") as f:
+        f.write(page)
+
+    # Individual posts
+    for p in posts:
+        body_md = md.markdown(p["body"], extensions=["extra"])
+        page = head(f"{p['title']} — Darby Thomas", p["summary"],
+                    "../assets/css/style.css") + f"""
+<body class="reading" style="--page-bg:{WRITING_BG}; --ink:{WRITING_INK}">
+{nav("../")}
+<main>
+  <article class="post wrap">
+    <a class="back" href="index.html">&larr; All writing</a>
+    <span class="post-date">{fmt_date(p['date'])}</span>
+    <h1 class="post-title">{p['title']}</h1>
+    <div class="prose post-body">
+{body_md}
+    </div>
+  </article>
+</main>
+{footer("../")}
+</body>
+</html>"""
+        with open(os.path.join(outdir, f"{p['slug']}.html"), "w", encoding="utf-8") as f:
+            f.write(page)
+
+
 def copy_assets():
     dst = os.path.join(OUT, "assets", "img", "projects")
     if os.path.isdir(dst):
@@ -259,6 +379,7 @@ def main():
     build_index()
     build_info()
     build_projects()
+    build_writing()
     print("Built site into", OUT)
 
 
