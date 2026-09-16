@@ -129,6 +129,7 @@ def body_html(slug):
         kept.append(ln)
     body = "\n".join(kept).strip()
     body = body.replace("](images/", f"](../assets/img/projects/{slug}/")
+    body = body.replace('src="images/', f'src="../assets/img/projects/{slug}/')
     htmlout = md.markdown(body, extensions=["extra"])
     # Turn the bare GitHub raw .mp4 URL line into a real local video player
     htmlout = re.sub(
@@ -191,7 +192,7 @@ def build_index():
     cards = []
     for i, (slug, title, cats) in enumerate(PROJECTS):
         thumb = find_thumb(slug)
-        color = PALETTE[i % len(PALETTE)]
+        color = PROJECT_BG
         cink = ink_for(color)
         cat_attr = " ".join(cats)
         cat_pills = "".join(f'<span class="pill">{CAT_LABELS[c]}</span>' for c in cats)
@@ -342,10 +343,11 @@ def build_writing():
 
     # Individual posts
     for p in posts:
-        body_md = md.markdown(p["body"], extensions=["extra"])
+        post_body = p["body"].replace("](images/", "](../assets/img/writing/")
+        body_md = md.markdown(post_body, extensions=["extra"])
         page = head(f"{p['title']} — Darby Thomas", p["summary"],
                     "../assets/css/style.css") + f"""
-<body class="reading tiled-bg" style="--page-bg:{WRITING_BG}; --ink:{WRITING_INK}">
+<body class="reading tiled-bg article-page" style="--page-bg:{WRITING_BG}; --ink:{WRITING_INK}">
 {nav("../")}
 <main>
   <article class="post wrap">
@@ -371,6 +373,13 @@ def copy_assets():
     for slug, _, _ in PROJECTS:
         src = os.path.join(CONTENT, "projects", slug, "images")
         shutil.copytree(src, os.path.join(dst, slug))
+
+    writing_src = os.path.join(CONTENT, "writing", "images")
+    writing_dst = os.path.join(OUT, "assets", "img", "writing")
+    if os.path.isdir(writing_dst):
+        shutil.rmtree(writing_dst)
+    if os.path.isdir(writing_src):
+        shutil.copytree(writing_src, writing_dst)
 
 
 def main():
