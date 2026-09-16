@@ -55,6 +55,7 @@ PALETTE = [
 ]
 INDEX_BG = "#ff5b39"   # homepage signature color (coral red)
 INFO_BG = "#8f8cff"    # info page (periwinkle)
+PROJECT_BG = "#DBE6EA"
 WRITING_BG = "#f7f1e6"  # calm cream for long-form reading
 WRITING_INK = "#1c1913"
 
@@ -225,6 +226,7 @@ def build_index():
                 "Product designer, illustrator, and eclectic creative based in California.",
                 "assets/css/style.css") + f"""
 <body class="home" style="--page-bg:{INDEX_BG}; --ink:{ink_for(INDEX_BG)}">
+<img class="home-corner-flowers" src="assets/img/yellow-flowers.png" alt="" aria-hidden="true">
 {nav("")}
 <main>
   <section class="hero">
@@ -261,7 +263,7 @@ def build_info():
     about_html = md.markdown(about, extensions=["extra"])
     page = head("Info — Darby Thomas", "About Darby Thomas.",
                 "assets/css/style.css") + f"""
-<body style="--page-bg:{INFO_BG}; --ink:{ink_for(INFO_BG)}">
+<body class="tiled-bg" style="--page-bg:{INFO_BG}; --ink:{ink_for(INFO_BG)}">
 {nav("")}
 <main>
   <section class="info wrap">
@@ -280,13 +282,12 @@ def build_projects():
     os.makedirs(os.path.join(OUT, "projects"), exist_ok=True)
     n = len(PROJECTS)
     for i, (slug, title, cats) in enumerate(PROJECTS):
-        color = PALETTE[i % len(PALETTE)]
         cat_pills = "".join(f'<span class="pill">{CAT_LABELS[c]}</span>' for c in cats)
         content = body_html(slug)
         nxt = PROJECTS[(i + 1) % n]
         page = head(f"{title} — Darby Thomas", f"{title} — a project by Darby Thomas.",
                     "../assets/css/style.css") + f"""
-<body style="--page-bg:{color}; --ink:{ink_for(color)}">
+<body style="--page-bg:{PROJECT_BG}; --ink:{ink_for(PROJECT_BG)}">
 {nav("../")}
 <main>
   <article class="project wrap">
@@ -322,7 +323,7 @@ def build_writing():
     items_html = "\n".join(items) if items else '<p class="prose">Nothing here yet — soon.</p>'
     page = head("Writing — Darby Thomas", "Essays and process notes by Darby Thomas.",
                 "../assets/css/style.css") + f"""
-<body class="reading" style="--page-bg:{WRITING_BG}; --ink:{WRITING_INK}">
+<body class="reading tiled-bg" style="--page-bg:{WRITING_BG}; --ink:{WRITING_INK}">
 {nav("../")}
 <main>
   <section class="writing-index wrap">
@@ -344,7 +345,7 @@ def build_writing():
         body_md = md.markdown(p["body"], extensions=["extra"])
         page = head(f"{p['title']} — Darby Thomas", p["summary"],
                     "../assets/css/style.css") + f"""
-<body class="reading" style="--page-bg:{WRITING_BG}; --ink:{WRITING_INK}">
+<body class="reading tiled-bg" style="--page-bg:{WRITING_BG}; --ink:{WRITING_INK}">
 {nav("../")}
 <main>
   <article class="post wrap">
