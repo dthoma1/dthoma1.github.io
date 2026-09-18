@@ -14,6 +14,7 @@ OUT = HERE
 
 # slug -> (Title, [category tokens]) in homepage order
 PROJECTS = [
+    ("quirk-up-your-workplace", "Quirk up your workplace", ["speaking"]),
     ("sponsors-onboarding", "Sponsors Onboarding", ["product"]),
     ("octocat-keycap", "Octocat Keycap", ["industrial", "brand"]),
     ("github-sponsors-landing-page", "GitHub Sponsors Landing Page", ["product", "brand"]),
@@ -38,6 +39,7 @@ CAT_LABELS = {
     "brand": "Brand &amp; marketing",
     "industrial": "Industrial design",
     "frontend": "Frontend",
+    "speaking": "Speaking",
 }
 
 # A saturated, playful accent color per project (for card tints / gradients)
