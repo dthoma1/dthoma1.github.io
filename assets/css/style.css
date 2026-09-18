@@ -140,7 +140,7 @@ a { color: inherit; }
   border: 0;
   border-radius: var(--radius);
   overflow: hidden;
-  opacity: .95;
+  opacity: .8;
   transition: opacity .18s ease;
 }
 .card:hover,

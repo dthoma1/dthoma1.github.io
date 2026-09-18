@@ -141,12 +141,14 @@ def body_html(slug):
     return htmlout
 
 def head(title, desc, css_path, extra=""):
+    asset_prefix = "../" if css_path.startswith("../") else ""
     return f"""<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{title}</title>
+  <link rel="icon" href="{asset_prefix}assets/img/favicon.ico">
   <meta name="description" content="{desc}">
   <meta property="og:title" content="{title}">
   <meta property="og:description" content="{desc}">
