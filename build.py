@@ -15,10 +15,11 @@ OUT = HERE
 # slug -> (Title, [category tokens]) in homepage order
 PROJECTS = [
     ("quirk-up-your-workplace", "Quirk up your workplace", ["speaking"]),
+    ("github-billing", "GitHub Billing", ["product"]),
+    ("github-docs", "GitHub Docs", ["product"]),
     ("sponsors-onboarding", "GitHub Sponsors", ["product", "brand"]),
     ("octocat-keycap", "Octocat Keycap", ["industrial", "brand"]),
-    ("tamagotchi", "Tamagotchi", ["illustration"]),
-    ("cyberdecks", "Cyberdecks", ["illustration"]),
+    ("i-love-blender", "I ❤️ Blender", ["illustration"]),
     ("ink-drawing-series", "Ink Drawing Series", ["illustration"]),
     ("supper-club", "Supper Club", ["brand", "illustration"]),
     ("kitchen-mural", "Kitchen Mural", ["illustration"]),
@@ -34,6 +35,15 @@ PROJECTS = [
 
 PROJECT_REDIRECTS = {
     "github-sponsors-landing-page": "sponsors-onboarding",
+    "tamagotchi": "i-love-blender",
+    "cyberdecks": "i-love-blender",
+}
+
+THUMBNAIL_STYLES = {
+    "github-docs": {
+        "media": "background:#56D3DC;",
+        "image": "object-fit:cover;",
+    },
 }
 
 CAT_LABELS = {
@@ -115,11 +125,11 @@ def load_posts():
 
 def find_thumb(slug):
     imgdir = os.path.join(CONTENT, "projects", slug, "images")
-    for name in ("thumbnail.jpg", "thumbnail.png", "thumbnail.gif"):
+    for name in ("thumbnail.jpg", "thumbnail.png", "thumbnail.gif", "thumbnail.svg"):
         if os.path.isfile(os.path.join(imgdir, name)):
             return name
     for name in sorted(os.listdir(imgdir)):
-        if name.lower().endswith((".jpg", ".png", ".gif", ".jpeg", ".webp")):
+        if name.lower().endswith((".jpg", ".png", ".gif", ".jpeg", ".webp", ".svg")):
             return name
     return None
 
@@ -203,8 +213,11 @@ def build_index():
         cink = ink_for(color)
         cat_attr = " ".join(cats)
         cat_pills = "".join(f'<span class="pill">{CAT_LABELS[c]}</span>' for c in cats)
+        thumb_styles = THUMBNAIL_STYLES.get(slug, {})
+        media_style = f' style="{thumb_styles["media"]}"' if thumb_styles.get("media") else ""
+        image_style = f' style="{thumb_styles["image"]}"' if thumb_styles.get("image") else ""
         cards.append(f"""      <a class="card" href="projects/{slug}.html" data-cats="{cat_attr}" style="--card-bg:{color}; --card-ink:{cink}">
-        <div class="card-media"><img loading="lazy" src="assets/img/projects/{slug}/{thumb}" alt="{title}"></div>
+        <div class="card-media"{media_style}><img loading="lazy" src="assets/img/projects/{slug}/{thumb}" alt="{title}"{image_style}></div>
         <div class="card-body">
           <h3 class="card-title">{title}</h3>
           <div class="pills">{cat_pills}</div>

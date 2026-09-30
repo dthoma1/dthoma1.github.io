@@ -126,7 +126,7 @@ a { color: inherit; }
   transition: background-color .18s, color .18s;
 }
 .chip:hover { background: rgba(0,0,0,0.08); }
-.chip.is-active { background: #ffffff; color: #141210; }
+.chip.is-active { background: #F2F93E; color: #141210; }
 
 /* ---------- Project grid (solid color blocks) ---------- */
 .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
@@ -172,7 +172,7 @@ a { color: inherit; }
   font-family: var(--body);
   font-size: 21px;
   line-height: 1;
-  color: var(--particle-color, #5BCBD4);
+  color: var(--particle-color, #ffffff);
   text-shadow: 0 0 8px rgba(255, 255, 255, .95), 0 0 16px rgba(91, 203, 212, .7);
   animation: magical-burst 1.8s ease-out infinite;
   animation-delay: var(--delay);
