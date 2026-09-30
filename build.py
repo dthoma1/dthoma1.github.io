@@ -15,9 +15,8 @@ OUT = HERE
 # slug -> (Title, [category tokens]) in homepage order
 PROJECTS = [
     ("quirk-up-your-workplace", "Quirk up your workplace", ["speaking"]),
-    ("sponsors-onboarding", "Sponsors Onboarding", ["product"]),
+    ("sponsors-onboarding", "GitHub Sponsors", ["product", "brand"]),
     ("octocat-keycap", "Octocat Keycap", ["industrial", "brand"]),
-    ("github-sponsors-landing-page", "GitHub Sponsors Landing Page", ["product", "brand"]),
     ("tamagotchi", "Tamagotchi", ["illustration"]),
     ("cyberdecks", "Cyberdecks", ["illustration"]),
     ("ink-drawing-series", "Ink Drawing Series", ["illustration"]),
@@ -32,6 +31,10 @@ PROJECTS = [
     ("coop-website", "Coop Website", ["brand", "frontend"]),
     ("fresh-cookie-scent", "Fresh Cookie Scent", ["brand", "illustration"]),
 ]
+
+PROJECT_REDIRECTS = {
+    "github-sponsors-landing-page": "sponsors-onboarding",
+}
 
 CAT_LABELS = {
     "product": "Product design",
@@ -310,6 +313,23 @@ def build_projects():
 </html>"""
         with open(os.path.join(OUT, "projects", f"{slug}.html"), "w", encoding="utf-8") as f:
             f.write(page)
+
+    for old_slug, new_slug in PROJECT_REDIRECTS.items():
+        redirect = f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>GitHub Sponsors — Darby Thomas</title>
+  <meta http-equiv="refresh" content="0; url={new_slug}.html">
+  <link rel="canonical" href="{new_slug}.html">
+</head>
+<body>
+  <p>This project has moved to <a href="{new_slug}.html">GitHub Sponsors</a>.</p>
+</body>
+</html>"""
+        with open(os.path.join(OUT, "projects", f"{old_slug}.html"), "w", encoding="utf-8") as f:
+            f.write(redirect)
 
 
 def build_writing():
