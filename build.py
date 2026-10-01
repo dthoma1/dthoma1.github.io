@@ -272,6 +272,7 @@ def build_index():
 </main>
 {footer("")}
 <script src="assets/js/main.js"></script>
+<script src="https://static.claydar.com/init.v1.js?id=cRy4mYj1LH"></script>
 </body>
 </html>"""
     with open(os.path.join(OUT, "index.html"), "w", encoding="utf-8") as f:

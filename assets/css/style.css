@@ -31,25 +31,27 @@ a { color: inherit; }
 .home,
 .tiled-bg {
   background-color: #28a8ca;
-  background-image: url("../img/repeat-background-3.png");
-  background-repeat: repeat;
+  background-image: url("../img/oct-1-bg.jpg");
+  background-repeat: no-repeat;
   background-attachment: fixed;
-  background-size: 1000px 1000px;
+  background-position: center;
+  background-size: cover;
 }
 .article-page {
   background-color: #f7f1e6;
   background-image:
     linear-gradient(rgba(247, 241, 230, .75), rgba(247, 241, 230, .75)),
-    url("../img/repeat-background-3.png");
-  background-repeat: no-repeat, repeat;
+    url("../img/oct-1-bg.jpg");
+  background-repeat: no-repeat, no-repeat;
   background-attachment: fixed, fixed;
-  background-size: cover, 1000px 1000px;
+  background-position: center, center;
+  background-size: cover, cover;
 }
 .home-corner-flowers {
   position: fixed;
   right: 0;
   bottom: 0;
-  width: clamp(520px, 65vw, 900px);
+  width: clamp(320px, 45vw, 650px);
   height: auto;
   pointer-events: none;
   z-index: 0;
