@@ -299,6 +299,27 @@ def build_info():
     with open(os.path.join(OUT, "info.html"), "w", encoding="utf-8") as f:
         f.write(page)
 
+def build_resume():
+    resume = read(os.path.join(CONTENT, "RESUME.md"))
+    resume_html = md.markdown(resume, extensions=["extra"])
+    page = head("Résumé — Darby Thomas", "Résumé for product designer Darby Thomas.",
+                "assets/css/style.css") + f"""
+<body class="reading tiled-bg" style="--page-bg:{WRITING_BG}; --ink:{WRITING_INK}">
+{nav("")}
+<main>
+  <article class="resume wrap">
+    <div class="resume-actions">
+      <a href="assets/img/darby-thomas-2026.pdf" download>Download PDF</a>
+    </div>
+    <div class="prose resume-content">{resume_html}</div>
+  </article>
+</main>
+{footer("")}
+</body>
+</html>"""
+    with open(os.path.join(OUT, "resume.html"), "w", encoding="utf-8") as f:
+        f.write(page)
+
 
 def build_projects():
     os.makedirs(os.path.join(OUT, "projects"), exist_ok=True)
@@ -419,6 +440,80 @@ def copy_assets():
     if os.path.isdir(writing_src):
         shutil.copytree(writing_src, writing_dst)
 
+def project_summary(slug):
+    text = read(os.path.join(CONTENT, "projects", slug, "README.md"))
+    for line in text.splitlines():
+        stripped = line.strip()
+        if (not stripped or stripped.startswith("#") or
+                stripped.startswith("**Categories:**") or
+                stripped.startswith("![") or stripped.startswith("<")):
+            continue
+        return re.sub(r"\[([^\]]+)\]\([^)]+\)", r"\1", stripped)
+    return "A portfolio project by Darby Thomas."
+
+def build_discovery():
+    base = "https://dthoma1.github.io"
+    posts = load_posts()
+    urls = [
+        f"{base}/",
+        f"{base}/info.html",
+        f"{base}/resume.html",
+        f"{base}/writing/",
+    ]
+    urls.extend(f"{base}/projects/{slug}.html" for slug, _, _ in PROJECTS)
+    urls.extend(f"{base}/writing/{post['slug']}.html" for post in posts)
+    sitemap = '<?xml version="1.0" encoding="UTF-8"?>\n'
+    sitemap += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+    sitemap += "\n".join(f"  <url><loc>{url}</loc></url>" for url in urls)
+    sitemap += "\n</urlset>\n"
+    with open(os.path.join(OUT, "sitemap.xml"), "w", encoding="utf-8") as f:
+        f.write(sitemap)
+
+    robots = f"""User-agent: *
+Allow: /
+
+Sitemap: {base}/sitemap.xml
+"""
+    with open(os.path.join(OUT, "robots.txt"), "w", encoding="utf-8") as f:
+        f.write(robots)
+
+    project_lines = "\n".join(
+        f"- [{title}]({base}/projects/{slug}.html): {project_summary(slug)}"
+        for slug, title, _ in PROJECTS
+    )
+    writing_lines = "\n".join(
+        f"- [{post['title']}]({base}/writing/{post['slug']}.html): {post['summary']}"
+        for post in posts
+    )
+    llms = f"""# Darby Thomas
+
+> Senior product designer, illustrator, and creative based in Berkeley, California. Currently designing at GitHub; previously at Patreon, Parabo Press, and Photojojo.
+
+## Primary pages
+
+- [Selected work]({base}/)
+- [Contact and biography]({base}/info.html)
+- [HTML résumé]({base}/resume.html)
+- [PDF résumé]({base}/assets/img/darby-thomas-2026.pdf)
+- [Writing]({base}/writing/)
+
+## Selected work
+
+{project_lines}
+
+## Writing
+
+{writing_lines}
+
+## Contact
+
+- Email: darbykimthomas@gmail.com
+- [LinkedIn](https://www.linkedin.com/in/darby-thomas-b4ba71265/)
+- [GitHub](https://github.com/dthoma1)
+"""
+    with open(os.path.join(OUT, "llms.txt"), "w", encoding="utf-8") as f:
+        f.write(llms)
+
 
 def main():
     os.makedirs(os.path.join(OUT, "assets", "css"), exist_ok=True)
@@ -426,8 +521,10 @@ def main():
     copy_assets()
     build_index()
     build_info()
+    build_resume()
     build_projects()
     build_writing()
+    build_discovery()
     print("Built site into", OUT)
 
 

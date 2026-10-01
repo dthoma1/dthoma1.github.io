@@ -1,0 +1,45 @@
+# Darby Thomas
+
+> Senior product designer, illustrator, and creative based in Berkeley, California. Currently designing at GitHub; previously at Patreon, Parabo Press, and Photojojo.
+
+## Primary pages
+
+- [Selected work](https://dthoma1.github.io/)
+- [Contact and biography](https://dthoma1.github.io/info.html)
+- [HTML résumé](https://dthoma1.github.io/resume.html)
+- [PDF résumé](https://dthoma1.github.io/assets/img/darby-thomas-2026.pdf)
+- [Writing](https://dthoma1.github.io/writing/)
+
+## Product design and speaking
+
+- [Quirk Up Your Workplace](https://dthoma1.github.io/projects/quirk-up-your-workplace.html): A Config 2026 talk about bringing personality, play, and quirk into the workplace.
+- [GitHub Billing](https://dthoma1.github.io/projects/github-billing.html): Product design work involving enterprise billing, cost centers, AI credit budgets, and usage controls.
+- [GitHub Docs](https://dthoma1.github.io/projects/github-docs.html): Copilot in Docs Search and Copilot Cookbook product design work.
+- [GitHub Sponsors](https://dthoma1.github.io/projects/sponsors-onboarding.html): Brand, marketing, landing-page, and onboarding work for GitHub Sponsors.
+- [Octocat Keycap](https://dthoma1.github.io/projects/octocat-keycap.html): Industrial and brand design for a custom GitHub Octocat keycap.
+
+## Illustration, brand, and creative work
+
+- [I Love Blender](https://dthoma1.github.io/projects/i-love-blender.html)
+- [Ink Drawing Series](https://dthoma1.github.io/projects/ink-drawing-series.html)
+- [Supper Club](https://dthoma1.github.io/projects/supper-club.html)
+- [Kitchen Mural](https://dthoma1.github.io/projects/kitchen-mural.html)
+- [Gartarot](https://dthoma1.github.io/projects/gartarot.html)
+- [Dispo Cam](https://dthoma1.github.io/projects/dispo-cam.html)
+- [Engineering Prints](https://dthoma1.github.io/projects/engineering-prints.html)
+- [Apple Juicebox Illustration](https://dthoma1.github.io/projects/apple-juicebox-illustration.html)
+- [Iris Smartphone Lens](https://dthoma1.github.io/projects/iris-smartphone-lens.html)
+- [Friendly Cargo Theme](https://dthoma1.github.io/projects/friendly-cargo-theme.html)
+- [Coop Website](https://dthoma1.github.io/projects/coop-website.html)
+- [Fresh Cookie Scent](https://dthoma1.github.io/projects/fresh-cookie-scent.html)
+
+## Writing
+
+- [My Favorite Stationery Supplies for 2026](https://dthoma1.github.io/writing/favorite-stationery-supplies-2026.html): The pens, pencils, notebooks, and desk tools Darby uses.
+- [Making Games for My Mom](https://dthoma1.github.io/writing/games-for-my-mom.html): Designing playful technology lessons to help a parent become more confident using a Mac.
+
+## Contact
+
+- Email: darbykimthomas@gmail.com
+- [LinkedIn](https://www.linkedin.com/in/darby-thomas-b4ba71265/)
+- [GitHub](https://github.com/dthoma1)

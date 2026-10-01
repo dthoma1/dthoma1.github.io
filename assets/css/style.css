@@ -249,6 +249,20 @@ a { color: inherit; }
 /* ---------- Info page ---------- */
 .info { padding: 66px 26px 100px; max-width: 760px; }
 .page-title { font-family: var(--display); font-weight: 700; font-size: clamp(40px, 8vw, 74px); margin: 0 0 20px; }
+.resume { padding: 46px 26px 100px; max-width: 860px; }
+.resume-actions { display: flex; justify-content: flex-end; margin-bottom: 24px; }
+.resume-actions a {
+  border: 1.5px solid currentColor;
+  border-radius: 999px;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: none;
+}
+.resume-actions a:hover { background: #F2F93E; color: #141210; }
+.resume-content > h1 { font-family: var(--display); font-size: clamp(48px, 8vw, 82px); line-height: 1; margin: 0 0 12px; }
+.resume-content h2 { border-top: 1.5px solid currentColor; padding-top: 28px; }
+.resume-content h3 { margin-bottom: 2px; }
 
 /* ---------- Footer ---------- */
 .site-footer { border-top: 1.5px solid var(--ink); padding: 26px 0; }
