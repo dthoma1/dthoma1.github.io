@@ -56,6 +56,28 @@ a { color: inherit; }
   pointer-events: none;
   z-index: 0;
 }
+@media (max-width: 700px) {
+  .home,
+  .tiled-bg {
+    background-image: url("../img/mobile-bg.jpg");
+    background-attachment: scroll;
+    background-position: center top;
+    background-size: cover;
+  }
+  .article-page {
+    background-image:
+      linear-gradient(rgba(247, 241, 230, .75), rgba(247, 241, 230, .75)),
+      url("../img/mobile-bg.jpg");
+    background-attachment: scroll, scroll;
+    background-position: center top, center top;
+    background-size: cover, cover;
+  }
+  .home-corner-flowers {
+    right: 0;
+    bottom: env(safe-area-inset-bottom, 0);
+    width: min(76vw, 320px);
+  }
+}
 .home > main,
 .home > .site-footer {
   position: relative;
