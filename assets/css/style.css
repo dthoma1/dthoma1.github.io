@@ -57,12 +57,23 @@ a { color: inherit; }
   z-index: 0;
 }
 @media (max-width: 700px) {
-  .home,
   .tiled-bg {
     background-image: url("../img/mobile-bg.jpg");
     background-attachment: scroll;
     background-position: center top;
     background-size: cover;
+  }
+  .home {
+    position: relative;
+    background-image: none;
+  }
+  .home::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background: #28a8ca url("../img/mobile-bg.jpg") center top / cover no-repeat;
   }
   .article-page {
     background-image:
@@ -123,6 +134,50 @@ a { color: inherit; }
 .nav-links a { text-decoration: none; font-weight: 600; font-size: 14px; text-transform: uppercase;
   letter-spacing: 0.06em; opacity: .75; transition: opacity .2s; }
 .nav-links a:hover { opacity: 1; }
+.mobile-nav { display: none; position: relative; }
+.mobile-nav summary {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  list-style: none;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+.mobile-nav summary::-webkit-details-marker { display: none; }
+.mobile-nav summary::after { content: "+"; font-size: 20px; line-height: 1; }
+.mobile-nav[open] summary::after { content: "−"; }
+.mobile-nav-links {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  min-width: 180px;
+  overflow: hidden;
+  background: #F2F93E;
+  border: 1.5px solid #141210;
+  border-radius: 14px;
+  box-shadow: 0 10px 30px rgba(20, 18, 16, .22);
+}
+.mobile-nav-links a {
+  padding: 12px 16px;
+  color: #141210;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: .04em;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+.mobile-nav-links a + a { border-top: 1px solid rgba(20, 18, 16, .3); }
+.mobile-nav-links a:hover,
+.mobile-nav-links a:focus-visible { background: rgba(255, 255, 255, .45); }
+@media (max-width: 700px) {
+  .desktop-nav { display: none; }
+  .mobile-nav { display: block; }
+}
 
 /* ---------- Hero ---------- */
 .hero { padding: 78px 0 52px; }

@@ -179,11 +179,19 @@ def nav(prefix):
     return f"""<header class="site-header">
   <div class="wrap nav">
     <a class="logo" href="{prefix}index.html">Darby&nbsp;Thomas</a>
-    <nav class="nav-links">
+    <nav class="nav-links desktop-nav" aria-label="Primary navigation">
       <a href="{prefix}index.html">Work</a>
       <a href="{prefix}writing/index.html">Writing</a>
       <a href="{prefix}info.html">Contact</a>
     </nav>
+    <details class="mobile-nav">
+      <summary>Menu</summary>
+      <nav class="mobile-nav-links" aria-label="Mobile navigation">
+        <a href="{prefix}index.html">Work</a>
+        <a href="{prefix}writing/index.html">Writing</a>
+        <a href="{prefix}info.html">Contact</a>
+      </nav>
+    </details>
   </div>
 </header>"""
 
