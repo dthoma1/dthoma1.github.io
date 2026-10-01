@@ -182,7 +182,7 @@ def nav(prefix):
     <nav class="nav-links">
       <a href="{prefix}index.html">Work</a>
       <a href="{prefix}writing/index.html">Writing</a>
-      <a href="{prefix}info.html">Info</a>
+      <a href="{prefix}info.html">Contact</a>
     </nav>
   </div>
 </header>"""
@@ -283,13 +283,13 @@ def build_info():
     about = read(os.path.join(CONTENT, "ABOUT.md"))
     about = re.sub(r"^# .*\n", "", about, count=1)
     about_html = md.markdown(about, extensions=["extra"])
-    page = head("Info — Darby Thomas", "About Darby Thomas.",
+    page = head("Contact — Darby Thomas", "Contact Darby Thomas and download her résumé.",
                 "assets/css/style.css") + f"""
 <body class="tiled-bg" style="--page-bg:{INFO_BG}; --ink:{ink_for(INFO_BG)}">
 {nav("")}
 <main>
   <section class="info wrap">
-    <h1 class="page-title"><span class="grad">Info</span></h1>
+    <h1 class="page-title"><span class="grad">Contact</span></h1>
     <div class="prose">{about_html}</div>
   </section>
 </main>
