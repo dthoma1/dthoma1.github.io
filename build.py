@@ -16,7 +16,7 @@ OUT = HERE
 PROJECTS = [
     ("quirk-up-your-workplace", "Quirk up your workplace", ["speaking"]),
     ("github-billing", "GitHub Billing", ["product"]),
-    ("github-docs", "GitHub Docs", ["product"]),
+    ("github-docs", "Copilot Search in GitHub Docs", ["product"]),
     ("sponsors-onboarding", "GitHub Sponsors", ["product", "brand"]),
     ("octocat-keycap", "Octocat Keycap", ["industrial", "brand"]),
     ("i-love-blender", "I ❤️ Blender", ["illustration"]),

@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>GitHub Docs — Darby Thomas</title>
+  <title>Copilot Search in GitHub Docs — Darby Thomas</title>
   <link rel="icon" href="../assets/img/favicon.ico">
-  <meta name="description" content="GitHub Docs — a project by Darby Thomas.">
-  <meta property="og:title" content="GitHub Docs — Darby Thomas">
-  <meta property="og:description" content="GitHub Docs — a project by Darby Thomas.">
+  <meta name="description" content="Copilot Search in GitHub Docs — a project by Darby Thomas.">
+  <meta property="og:title" content="Copilot Search in GitHub Docs — Darby Thomas">
+  <meta property="og:description" content="Copilot Search in GitHub Docs — a project by Darby Thomas.">
   <meta property="og:type" content="website">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -37,12 +37,27 @@
   <article class="project wrap">
     <a class="back" href="../index.html">&larr; All work</a>
     <div class="pills"><span class="pill">Product design</span></div>
-    <h1 class="project-title"><span class="grad">GitHub Docs</span></h1>
+    <h1 class="project-title"><span class="grad">Copilot Search in GitHub Docs</span></h1>
     <div class="prose project-content">
-      <p>While I was the GitHub Docs Designer I helped ship Copilot in Docs Search, and helped launch Copilot Cookbook.</p>
+      <p><strong>Role:</strong> Product design: discovery, concept prototyping, interaction design, and launch refinement<br />
+      <strong>Timeline:</strong> July 2024-May 2025</p>
       <video controls loop muted playsinline preload="metadata" src="../assets/img/projects/github-docs/copilot-docs-demo.mov"></video>
-      <p><img alt="GitHub Copilot cookbook page concept" src="../assets/img/projects/github-docs/copilot-cookbook.png" /></p>
-      <p><img alt="GitHub Docs visual explorations" src="../assets/img/projects/github-docs/copilot-docs-explorations.png" /><img alt="GitHub Docs layout explorations" src="../assets/img/projects/github-docs/copilot-docs-layouts.png" /></p>
+      <p>Users struggled to find relevant answers through Docs search, leaving them to sort through documentation rather than get the help they needed.</p>
+      <p>I joined to translate card-sort findings into a navigation refresh. Through stakeholder interviews, a review of usage data and public feedback, and an audit of the experience, I identified a broader opportunity: help people get answers, not just navigate articles. Users were already turning to external search engines and AI tools when Docs search fell short. I proposed bringing Copilot into that experience, and partnered with the product manager to explore the approach.</p>
+      <p>Working with Docs product and engineering, Copilot Design, and Customer Success Engineering, I shaped the experience from early exploration through staff testing and public preview. The result was an optional AI assistant within search, designed to help people synthesize answers while keeping source documentation and traditional article results within reach.</p>
+      <h2>Making the problem clear</h2>
+      <p>As a new member of the team, I treated Docs stakeholders as design partners. I interviewed leadership, content writers, and engineers about customer feedback and their direct experiences helping users. I reviewed usage signals alongside stakeholder and public feedback. I also manually reviewed search feedback on X/Twitter, Reddit, and GitHub Discussions, then built a screen inventory and analyzed key workflows.</p>
+      <p>The feedback suggested a pattern: novices could give up when results missed the mark, while experienced users worked around Docs search with external search engines or AI tools. The audit also surfaced dated typography and illustrations, but the larger opportunity was finding answers. Users' growing comfort with AI made Copilot a direction worth testing, rather than assuming navigation changes alone would solve the problem.</p>
+      <h2>Stress-testing where AI belonged</h2>
+      <p>My initial instinct was to put AI-generated summaries in the search dialog. But users who had learned to bypass Docs search might never discover them. An assistant embedded in an article could meet those readers where they already were.</p>
+      <p>The product manager and I brainstormed alternatives, and I rapidly prototyped them for testing with the Docs team. I explored article-level assistance and persistent controls, including for readers landing directly on anchored sections. That improved visibility, but an ever-present assistant also risked competing with the documentation.</p>
+      <p>Through prototype testing and reviews with Docs and Copilot Design, we built alignment around the search dialog as the primary path. It met people where they expressed a question, including new GitHub users already using AI to code who had not yet formed habits around external search.</p>
+      <h2>Search first, Copilot second</h2>
+      <p>I shaped the hierarchy around a deliberate choice: conventional article matches came first, with <strong>Ask Copilot</strong> as a secondary action. People could still press Enter or view all articles; generating an answer was an explicit choice, not a replacement for search.</p>
+      <p>With the primary flow agreed, I worked in fast feedback loops with engineering to refine the look, feel, and behavior across dozens of possible states. Answers linked back to documentation so readers could verify details and keep learning. I worked through loading, error, and return-to-results states, including declining out-of-scope questions while preserving a useful path back to Docs search.</p>
+      <h2>Shipped</h2>
+      <p>A controlled A/B rollout showed that visitors exposed to the redesigned search experience were twice as likely to interact with search. Among visitors who rated a Copilot answer, the majority rated the answer positively. Based on these signals and staged testing, the experience rolled out to 100% of GitHub Docs visitors.</p>
+      <p>The biggest design decision wasn't how the chat looked. It was giving AI a clear, limited job: help when someone needs an answer synthesized from documentation, and stay out of the way when an article is enough.</p>
     </div>
     <a class="next" href="sponsors-onboarding.html">Next project: <strong>GitHub Sponsors</strong> &rarr;</a>
   </article>

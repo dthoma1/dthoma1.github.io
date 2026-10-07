@@ -14,7 +14,7 @@
 
 - [Quirk Up Your Workplace](https://dthoma1.github.io/projects/quirk-up-your-workplace.html): A Config 2026 talk about bringing personality, play, and quirk into the workplace.
 - [GitHub Billing](https://dthoma1.github.io/projects/github-billing.html): Product design work involving enterprise billing, cost centers, AI credit budgets, and usage controls.
-- [GitHub Docs](https://dthoma1.github.io/projects/github-docs.html): Copilot in Docs Search and Copilot Cookbook product design work.
+- [Copilot Search in GitHub Docs](https://dthoma1.github.io/projects/github-docs.html): A product design case study on AI-powered documentation search, from discovery through public preview.
 - [GitHub Sponsors](https://dthoma1.github.io/projects/sponsors-onboarding.html): Brand, marketing, landing-page, and onboarding work for GitHub Sponsors.
 - [Octocat Keycap](https://dthoma1.github.io/projects/octocat-keycap.html): Industrial and brand design for a custom GitHub Octocat keycap.
 
